@@ -50,13 +50,15 @@ public class PlayerShip extends Character {
     }
 
     public void shoot() {
-        double bvx = Math.sin(Math.toRadians(this.getRotate())) * bulletSpeed;
-        double bvy = -Math.cos(Math.toRadians(this.getRotate())) * bulletSpeed;
+        double bvx = Math.sin(Math.toRadians(animatedSprite.getRotate())) * bulletSpeed;
+        double bvy = -Math.cos(Math.toRadians(animatedSprite.getRotate())) * bulletSpeed;
+        double bx = Math.sin(Math.toRadians(animatedSprite.getRotate())) * animatedSprite.height/2 + getX();
+        double by = -Math.cos(Math.toRadians(animatedSprite.getRotate())) * animatedSprite.height/2 + getY();
 
-        Bullet bullet = new Bullet(this.getBoundsInParent().getCenterX(), this.getBoundsInParent().getCenterY(), 0, 0, new AnimatedSprite(new Image(Launcher.class.getResource("laserRed14.png").toString()), 1, 1, 1, 0, 0, 13, 57), 13, 57);
+        Bullet bullet = new Bullet(bx, by, 0, 0, new AnimatedSprite(new Image(Launcher.class.getResource("laserRed14.png").toString()), 1, 1, 1, 0, 0, 13, 57), 13, 57);
         bullet.setVx(bvx);
         bullet.setVy(bvy);
-        Platform.runLater(() -> bullet.setRotate(animatedSprite.getRotate()));
+        Platform.runLater(() -> bullet.animatedSprite.setRotate(animatedSprite.getRotate()));
         bulletList.add(bullet);
         Platform.runLater(() -> ((Pane) getParent()).getChildren().add(bullet));
     }

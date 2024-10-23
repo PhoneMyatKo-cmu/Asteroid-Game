@@ -18,8 +18,8 @@ public abstract class MovingObject extends Pane {
         this.animatedSprite = animatedSprite;
         this.animatedSprite.setFitWidth(width);
         this.animatedSprite.setFitHeight(height);
-//        setTranslateX(this.x);
-//        setTranslateY(this.y);
+        setTranslateX(this.x - animatedSprite.width/2);
+        setTranslateY(this.y - animatedSprite.height/2);
         getChildren().add(animatedSprite);
         setWidth(width);
         setHeight(height);
@@ -42,8 +42,8 @@ public abstract class MovingObject extends Pane {
         }
         Platform.runLater( () -> {
             animatedSprite.start();
-            animatedSprite.setTranslateX(x - animatedSprite.getFitWidth()/2);
-            animatedSprite.setTranslateY(y - animatedSprite.getFitHeight()/2);
+            this.setTranslateX(x - animatedSprite.width/2);
+            this.setTranslateY(y - animatedSprite.height/2);
         });
     }
 
