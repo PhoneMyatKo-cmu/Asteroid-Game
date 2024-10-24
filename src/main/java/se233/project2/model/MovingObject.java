@@ -5,8 +5,9 @@ import javafx.scene.layout.Pane;
 import se233.project2.view.GameStage;
 
 public abstract class MovingObject extends Pane {
-    private double x, y, vx, vy, ax, ay, drag = 1; // x & y coordinates and velocities
+    private double x, y, vx, vy, ax, ay, drag = 5; // x & y coordinates and velocities
     protected AnimatedSprite animatedSprite;
+    private boolean isDead;
 
     public MovingObject(double x, double y, double ax, double ay, AnimatedSprite animatedSprite, double width, double height) {
         this.x = x;
@@ -25,6 +26,8 @@ public abstract class MovingObject extends Pane {
         setHeight(height);
     }
 
+    public abstract void die();
+
     public void move() {
         vx += ax;
         vy += ay;
@@ -40,6 +43,10 @@ public abstract class MovingObject extends Pane {
         } else if (y < 0) {
             y = GameStage.HEIGHT;
         }
+
+    }
+
+    public void draw() {
         Platform.runLater( () -> {
             animatedSprite.start();
             this.setTranslateX(x - animatedSprite.width/2);
@@ -62,7 +69,12 @@ public abstract class MovingObject extends Pane {
     }
 
     public boolean isCollided(MovingObject movingObject) {
+        if (isDead) return false;
         return this.getBoundsInParent().intersects(movingObject.getBoundsInParent());
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
 
     public double getAx() {

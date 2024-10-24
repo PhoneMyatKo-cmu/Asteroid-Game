@@ -1,9 +1,7 @@
 package se233.project2.controller;
 
 import javafx.application.Platform;
-import se233.project2.model.Bullet;
-import se233.project2.model.MovingObject;
-import se233.project2.model.PlayerShip;
+import se233.project2.model.*;
 import se233.project2.view.GameStage;
 
 import java.util.ArrayList;
@@ -22,24 +20,50 @@ public class DrawingLoop implements Runnable {
     }
 
     private void update() {
-        playerShip.move();
-        ArrayList<Bullet> playerBulletList = (ArrayList<Bullet>) playerShip.getBulletList().clone();
-        ArrayList<Bullet> playerBulletToBeRemoved = new ArrayList<>();
-        for (MovingObject movingObject : enemyList) {
-            movingObject.move();
+        playerShip.draw();
+        if (playerShip.isDead() && playerShip.isActive()) {
+            DeathRenderTask task = new DeathRenderTask(playerShip);
+            (new Thread(task)).start();
         }
-        synchronized (playerBulletList) {
-            Iterator<Bullet> iterator = playerBulletList.iterator();
+        ArrayList<Bullet> playerBulletListCloned = (ArrayList<Bullet>) playerShip.getBulletList().clone();
+        ArrayList<Bullet> playerBulletToBeRemoved = new ArrayList<>();
+        ArrayList<MovingObject> enemyListCloned = (ArrayList<MovingObject>) enemyList.clone();
+        ArrayList<MovingObject> enemyToBeRemoved = new ArrayList<>();
+        synchronized (playerBulletListCloned) {
+            Iterator<Bullet> iterator = playerBulletListCloned.iterator();
             while (iterator.hasNext()) {
                 Bullet bullet = iterator.next();
                 if (bullet.isDead()) {
                     playerBulletToBeRemoved.add(bullet);
                     Platform.runLater(() -> gameStage.getChildren().remove(bullet));
                 }
-                bullet.move();
+                bullet.draw();
             }
         }
-        playerShip.getBulletList().removeAll(playerBulletToBeRemoved);
+        synchronized (playerShip.getBulletList()) {
+            playerShip.getBulletList().removeAll(playerBulletToBeRemoved);
+        }
+
+        synchronized (enemyListCloned) {
+            Iterator<MovingObject> iterator = enemyListCloned.iterator();
+            while (iterator.hasNext()) {
+                MovingObject movingObject = iterator.next();
+                if (movingObject.isDead()) {
+                    enemyToBeRemoved.add(movingObject);
+                    Platform.runLater(() -> {
+                        gameStage.getChildren().remove(movingObject);
+                        new Explosion(gameStage, movingObject.getX(), movingObject.getY());
+                    });
+                    if (movingObject instanceof Asteroid) {
+                        Asteroid.explode(gameStage, (Asteroid) movingObject);
+                    }
+                }
+                movingObject.draw();
+            }
+            synchronized (gameStage.getEnemyList()) {
+                gameStage.getEnemyList().removeAll(enemyToBeRemoved);
+            }
+        }
 
     }
 

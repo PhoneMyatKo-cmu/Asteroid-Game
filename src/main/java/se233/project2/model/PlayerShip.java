@@ -17,22 +17,25 @@ public class PlayerShip extends Character {
     private KeyCode turnLeftKey = KeyCode.LEFT;
     private KeyCode turnRightKey = KeyCode.RIGHT;
     private KeyCode shootKey = KeyCode.SPACE;
-    private boolean isDead;
-    private final int bulletSpeed = 3;
+    private boolean isDead, isActive;
+    private final int bulletSpeed = 10;
     private ArrayList<Bullet> bulletList;
+    private long lastShotTime = 0;
+    private int fireRate = 2;
 
     public PlayerShip(double x, double y, AnimatedSprite animatedSprite, int hp, double width, double height) {
         super(x, y, 0, 0, animatedSprite, hp, width, height);
         isDead = false;
+        isActive = true;
         bulletList = new ArrayList<>();
     }
 
-    public void moveRight() { setAx(0.3); }
+    public void moveRight() { setAx(1); }
     public void moveLeft() {
-        setAx(-0.3);
+        setAx(-1);
     }
-    public void moveUp() { setAy(-0.3); }
-    public void moveDown() { setAy(0.3); }
+    public void moveUp() { setAy(-1); }
+    public void moveDown() { setAy(1); }
 
     public void turnLeft() {
         Platform.runLater(() -> animatedSprite.setRotate(animatedSprite.getRotate() - 5));
@@ -41,15 +44,14 @@ public class PlayerShip extends Character {
         Platform.runLater(() -> animatedSprite.setRotate(animatedSprite.getRotate() + 5));
     }
     public void die() {
-        this.setX(350);
-        this.setY(500);
+        isDead = true;
         this.setHp(getHp() - 1);
-
-        DeathRenderTask task = new DeathRenderTask(this);
-        (new Thread(task)).start();
     }
 
     public void shoot() {
+        if (System.currentTimeMillis() - lastShotTime < 1000/fireRate) {
+            return;
+        }
         double bvx = Math.sin(Math.toRadians(animatedSprite.getRotate())) * bulletSpeed;
         double bvy = -Math.cos(Math.toRadians(animatedSprite.getRotate())) * bulletSpeed;
         double bx = Math.sin(Math.toRadians(animatedSprite.getRotate())) * animatedSprite.height/2 + getX();
@@ -61,24 +63,23 @@ public class PlayerShip extends Character {
         Platform.runLater(() -> bullet.animatedSprite.setRotate(animatedSprite.getRotate()));
         bulletList.add(bullet);
         Platform.runLater(() -> ((Pane) getParent()).getChildren().add(bullet));
+        lastShotTime = System.currentTimeMillis();
     }
 
-    @Override
-    public boolean isCollided(MovingObject movingObject) {
-        if (isDead) return false;
-        return super.isCollided(movingObject);
-    }
-
-
-    public void setDead(boolean disabled) { this.isDead = disabled; }
 
     public boolean isDead() { return isDead; }
 
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
 
+    public boolean isActive() {
+        return isActive;
+    }
 
-
-
-
+    public void setActive(boolean active) {
+        isActive = active;
+    }
     public KeyCode getMoveUpKey() {
         return moveUpKey;
     }

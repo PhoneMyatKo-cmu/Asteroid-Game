@@ -17,6 +17,7 @@ public class DeathRenderTask implements Runnable {
         Platform.runLater(() -> {
             playerShip.setVisible(false);
             Explosion explosion = new Explosion((Pane) playerShip.getParent(), playerShip.getX(), playerShip.getY());
+            playerShip.setActive(false);
         });
 
         try {
@@ -25,9 +26,12 @@ public class DeathRenderTask implements Runnable {
             e.printStackTrace();
         }
 
+        playerShip.setX(350);
+        playerShip.setY(500);
         Platform.runLater(() -> {
             playerShip.setVisible(true);
             playerShip.setDead(false);
+            playerShip.setActive(true);
         });
     }
 

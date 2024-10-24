@@ -40,8 +40,8 @@ public class GenerateAsteroidTask implements Runnable {
                 y = rand.nextDouble(0, GameStage.HEIGHT);
                 break;
         }
-        vx = rand.nextDouble(-0.5, 0.5);
-        vy = rand.nextDouble(0.5);
+        vx = rand.nextDouble(-1.5, 1.5);
+        vy = rand.nextDouble(1.5);
         int level = rand.nextInt(1,4);
         Asteroid asteroid = new Asteroid(x, y, 0, 0,
                 new AnimatedSprite(new Image(Launcher.class.getResourceAsStream("sprite_sheet/animated_asteroid2.png")), 16, 16, 1, 0, 0, 60, 60),
@@ -65,6 +65,7 @@ public class GenerateAsteroidTask implements Runnable {
             for (int i = 0; i < numberOfAsteroids; i++) {
                 generateAsteroid();
             }
+            asteroidLimit--;
         }
     }
 }

@@ -3,6 +3,7 @@ package se233.project2.model;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -15,11 +16,12 @@ public class Explosion extends ImageView {
 
     public Explosion(Pane gamePane, double x, double y) {
         this.gamePane = gamePane;
-        setImage(new Image(Launcher.class.getResourceAsStream("Explosion.png")));  // Path to your explosion image
-        setFitWidth(50);  // Adjust the size of the explosion
-        setFitHeight(50);
+        setImage(new Image(Launcher.class.getResourceAsStream("sprite_sheet/explosion_01_strip13.png")));  // Path to your explosion image
+        setFitWidth(100);  // Adjust the size of the explosion
+        setFitHeight(100);
         setLayoutX(x);
         setLayoutY(y);
+        this.setViewport(new Rectangle2D(424.67, 0, 212.33, 190));
         this.gamePane.getChildren().add(this);  // Add explosion to the game scene
 
         // Optional fade-out effect to make the explosion disappear smoothly
