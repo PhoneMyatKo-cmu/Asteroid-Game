@@ -46,10 +46,13 @@ public class GameStageController {
         startCountdown(countdownLabel,()-> {
             GameLoop gameLoop=new GameLoop(gameStage);
             DrawingLoop drawingLoop=new DrawingLoop(gameStage);
-            GenerateAsteroidTask generateAsteroidTask=new GenerateAsteroidTask(gameStage);
+            GenerateEnemyTask generateEnemyTask =new GenerateEnemyTask(gameStage);
             Thread thread=new Thread(gameLoop);
             Thread thread1=new Thread(drawingLoop);
-            Thread thread2=new Thread(generateAsteroidTask);
+            Thread thread2=new Thread(generateEnemyTask);
+            thread.setDaemon(true);
+            thread1.setDaemon(true);
+            thread2.setDaemon(true);
             thread.start();
             thread1.start();
             thread2.start();

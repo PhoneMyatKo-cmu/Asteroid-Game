@@ -3,21 +3,19 @@ package se233.project2.controller;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import se233.project2.Launcher;
-import se233.project2.model.AnimatedSprite;
-import se233.project2.model.Asteroid;
-import se233.project2.model.MovingObject;
+import se233.project2.model.*;
 import se233.project2.view.GameStage;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class GenerateAsteroidTask implements Runnable {
+public class GenerateEnemyTask implements Runnable {
     private ArrayList<MovingObject> enemyList;
     private GameStage gameStage;
     private Random rand;
     private int asteroidLimit = 20;
 
-    public GenerateAsteroidTask(GameStage gameStage) {
+    public GenerateEnemyTask(GameStage gameStage) {
         this.gameStage = gameStage;
         this.enemyList = gameStage.getEnemyList();
         rand = new Random();
@@ -50,11 +48,24 @@ public class GenerateAsteroidTask implements Runnable {
         asteroid.setVy(vy);
         enemyList.add(asteroid);
         Platform.runLater(() -> gameStage.getChildren().add(asteroid));
+        asteroidLimit -= level;
     }
+
+    private void generateEnemyShip() {
+        Random rand = new Random();
+        double y = rand.nextDouble(100);
+        AnimatedSprite animatedSprite = new AnimatedSprite(new Image(Launcher.class.getResourceAsStream("enemyBlack3.png")), 1, 1, 1, 0, 0, 103, 84);
+        EnemyShip enemyShip = new EnemyShip(0, y, 0, 0, animatedSprite, 1, 60, 50);
+        enemyShip.setVx(5);
+        enemyList.add(enemyShip);
+        Platform.runLater(() -> gameStage.getChildren().add(enemyShip));
+    }
+
+
 
     @Override
     public void run() {
-        while (asteroidLimit > 0) {
+        for (int count = 0; asteroidLimit > 0 && gameStage.isRunning(); count++) {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
@@ -65,7 +76,12 @@ public class GenerateAsteroidTask implements Runnable {
             for (int i = 0; i < numberOfAsteroids; i++) {
                 generateAsteroid();
             }
-            asteroidLimit--;
+
+            if (count % 3 == 0)
+                generateEnemyShip();
+        }
+        if (asteroidLimit <= 0) {
+            gameStage.setBossRound(true);
         }
     }
 }

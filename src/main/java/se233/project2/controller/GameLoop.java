@@ -1,9 +1,7 @@
 package se233.project2.controller;
 
 import javafx.application.Platform;
-import se233.project2.model.Bullet;
-import se233.project2.model.MovingObject;
-import se233.project2.model.PlayerShip;
+import se233.project2.model.*;
 import se233.project2.view.GameStage;
 
 import java.util.ArrayList;
@@ -59,11 +57,18 @@ public class GameLoop implements Runnable {
         playerShip.move();
         ArrayList<MovingObject> enemyListCloned = (ArrayList<MovingObject>) enemyList.clone();
         ArrayList<Bullet> bulletListCloned = (ArrayList<Bullet>) playerShip.getBulletList().clone();
+        ArrayList<Bullet> enemyBulletListCloned = (ArrayList<Bullet>) GameStage.enemyBulletList.clone();
         for (MovingObject movingObject: enemyListCloned) {
             movingObject.move();
-            if (playerShip.isCollided(movingObject)) {
+            if (playerShip.isCollided(movingObject) && !playerShip.isDead()) {
                 playerShip.stop();
                 playerShip.die();
+            }
+            if (movingObject instanceof EnemyShip) {
+                ((EnemyShip) movingObject).shoot();
+            }
+            if (movingObject instanceof Boss) {
+                ((Boss) movingObject).shoot();
             }
         }
         for (Bullet bullet: bulletListCloned) {
@@ -72,14 +77,33 @@ public class GameLoop implements Runnable {
                 if (bullet.isCollided(movingObject)) {
                     bullet.die();
                     movingObject.die();
+                    Platform.runLater(() -> new Explosion(gameStage, movingObject.getX(), movingObject.getY()));
+                    if (movingObject instanceof Asteroid && ((Asteroid) movingObject).getLevel() == 1) {
+                        playerShip.increaseScore();
+                    }
+                    break;
                 }
             }
+        }
+        for (Bullet bullet: enemyBulletListCloned) {
+            bullet.move();
+            if (bullet.isCollided(playerShip) && !playerShip.isDead()) {
+                bullet.die();
+                playerShip.stop();
+                playerShip.die();
+            }
+        }
+
+        if (gameStage.isBossRound() && enemyList.isEmpty()) {
+            Boss boss = Boss.generateBoss();
+            gameStage.setBoss(boss);
+            enemyList.add(boss);
         }
     }
 
     @Override
     public void run() {
-        while (true){
+        while (gameStage.isRunning()){
             long startTime = System.currentTimeMillis();
             updatePlayerShip();
             update();

@@ -42,6 +42,10 @@ public class Asteroid extends Character {
         isDead = true;
     }
 
+    public int getLevel() {
+        return level;
+    }
+
     public boolean isDead() {
         return isDead;
     }

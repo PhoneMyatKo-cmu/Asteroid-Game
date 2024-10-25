@@ -1,6 +1,9 @@
 package se233.project2.controller;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.scene.control.Label;
+import javafx.util.Duration;
 import se233.project2.model.*;
 import se233.project2.view.GameStage;
 
@@ -12,6 +15,7 @@ public class DrawingLoop implements Runnable {
     private PlayerShip playerShip;
     private ArrayList<MovingObject> enemyList;
     private long interval = 1000/60;
+    private int running = 10;
 
     public DrawingLoop(GameStage gameStage) {
         this.gameStage = gameStage;
@@ -19,16 +23,54 @@ public class DrawingLoop implements Runnable {
         this.enemyList = gameStage.getEnemyList();
     }
 
+    private void bossRoundTransistion() {
+        Label warningLabel = new Label("Final Boss Incoming!!!");
+        Platform.runLater(() -> {
+            warningLabel.setStyle("-fx-font-size: 40px; -fx-text-fill: red; -fx-alignment: center");
+            warningLabel.setPrefWidth(GameStage.WIDTH);
+            warningLabel.setLayoutX(0);
+            warningLabel.setLayoutY(GameStage.HEIGHT/2);
+            gameStage.getChildren().add(warningLabel);
+
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(event -> gameStage.getChildren().remove(warningLabel));
+            pause.play();
+        });
+    }
+
     private void update() {
-        playerShip.draw();
-        if (playerShip.isDead() && playerShip.isActive()) {
-            DeathRenderTask task = new DeathRenderTask(playerShip);
-            (new Thread(task)).start();
+        updatePlayerShip();
+        updatePlayerBullet();
+        updateEnemies();
+        updateEnemyBullet();
+        if (gameStage.isBossRound() && gameStage.getBoss() != null) {
+            bossRoundTransistion();
+            Platform.runLater(() -> gameStage.getChildren().add(gameStage.getBoss()));
+            gameStage.setBossRound(false);
         }
+
+        Platform.runLater(() -> {
+            gameStage.getScoreLabel().setText(playerShip.getScore() + "");
+        });
+    }
+
+    private void updatePlayerShip() {
+        playerShip.draw();
+        if (playerShip.isDead()) {
+            if (playerShip.isActive()) {
+                Platform.runLater(() -> gameStage.getHpBox().getChildren().removeLast());
+                playerShip.deathRender();
+                playerShip.setActive(false);
+                System.out.println(playerShip.getHp());
+            } else {
+                playerShip.respawnRender();
+            }
+        }
+    }
+
+    private void updatePlayerBullet() {
         ArrayList<Bullet> playerBulletListCloned = (ArrayList<Bullet>) playerShip.getBulletList().clone();
         ArrayList<Bullet> playerBulletToBeRemoved = new ArrayList<>();
-        ArrayList<MovingObject> enemyListCloned = (ArrayList<MovingObject>) enemyList.clone();
-        ArrayList<MovingObject> enemyToBeRemoved = new ArrayList<>();
         synchronized (playerBulletListCloned) {
             Iterator<Bullet> iterator = playerBulletListCloned.iterator();
             while (iterator.hasNext()) {
@@ -43,7 +85,11 @@ public class DrawingLoop implements Runnable {
         synchronized (playerShip.getBulletList()) {
             playerShip.getBulletList().removeAll(playerBulletToBeRemoved);
         }
+    }
 
+    private void updateEnemies() {
+        ArrayList<MovingObject> enemyListCloned = (ArrayList<MovingObject>) enemyList.clone();
+        ArrayList<MovingObject> enemyToBeRemoved = new ArrayList<>();
         synchronized (enemyListCloned) {
             Iterator<MovingObject> iterator = enemyListCloned.iterator();
             while (iterator.hasNext()) {
@@ -52,11 +98,13 @@ public class DrawingLoop implements Runnable {
                     enemyToBeRemoved.add(movingObject);
                     Platform.runLater(() -> {
                         gameStage.getChildren().remove(movingObject);
-                        new Explosion(gameStage, movingObject.getX(), movingObject.getY());
                     });
                     if (movingObject instanceof Asteroid) {
                         Asteroid.explode(gameStage, (Asteroid) movingObject);
                     }
+                }
+                if (movingObject instanceof Boss) {
+                    ((Boss) movingObject).aimPlayerShip(playerShip);
                 }
                 movingObject.draw();
             }
@@ -64,14 +112,30 @@ public class DrawingLoop implements Runnable {
                 gameStage.getEnemyList().removeAll(enemyToBeRemoved);
             }
         }
+    }
 
+    private void updateEnemyBullet() {
+        ArrayList<Bullet> enemyBulletCloned = (ArrayList<Bullet>) GameStage.enemyBulletList.clone();
+        ArrayList<Bullet> bulletToBeRemoved = new ArrayList<>();
+        for (Bullet bullet : enemyBulletCloned) {
+            if (bullet.isDead()) {
+                bulletToBeRemoved.add(bullet);
+                Platform.runLater(() -> gameStage.getChildren().remove(bullet));
+            }
+            bullet.draw();
+        }
+        synchronized (GameStage.enemyBulletList) {
+            GameStage.enemyBulletList.removeAll(bulletToBeRemoved);
+        }
     }
 
     @Override
     public void run() {
-        while (true) {
+        while (running > 0) {
             long startTime = System.currentTimeMillis();
             update();
+            if (!gameStage.isRunning())
+                running--;
             long elapsedTime = System.currentTimeMillis() - startTime;
             try {
                 if (elapsedTime <= interval) {

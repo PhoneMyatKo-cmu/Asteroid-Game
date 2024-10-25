@@ -7,7 +7,7 @@ import se233.project2.view.GameStage;
 public abstract class MovingObject extends Pane {
     private double x, y, vx, vy, ax, ay, drag = 5; // x & y coordinates and velocities
     protected AnimatedSprite animatedSprite;
-    private boolean isDead;
+    protected boolean isDead;
 
     public MovingObject(double x, double y, double ax, double ay, AnimatedSprite animatedSprite, double width, double height) {
         this.x = x;
@@ -33,14 +33,14 @@ public abstract class MovingObject extends Pane {
         vy += ay;
         x += vx;
         y += vy;
-        if (x > GameStage.WIDTH) {
+        if (x > GameStage.WIDTH + animatedSprite.width/2) {
             x = 0;
-        } else if (x < 0) {
+        } else if (x < 0 - animatedSprite.width/2) {
             x = GameStage.WIDTH;
         }
-        if (y > GameStage.HEIGHT) {
+        if (y > GameStage.HEIGHT + animatedSprite.height/2) {
             y = 0;
-        } else if (y < 0) {
+        } else if (y < 0 - animatedSprite.height/2) {
             y = GameStage.HEIGHT;
         }
 
