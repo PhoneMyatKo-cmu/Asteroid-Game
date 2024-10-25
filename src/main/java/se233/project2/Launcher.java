@@ -6,24 +6,23 @@ import javafx.stage.Stage;
 import se233.project2.controller.DrawingLoop;
 import se233.project2.controller.GameLoop;
 import se233.project2.controller.GenerateAsteroidTask;
+import se233.project2.view.GameMenu;
 import se233.project2.view.GameStage;
 
 public class Launcher extends Application {
-    private GameStage gameStage;
+    private GameMenu gameMenu;
+    public static Stage primaryStage;
 
     @Override
-    public void start(Stage primaryStage) {
-        gameStage = new GameStage();
-        Scene scene = new Scene(gameStage);
-        scene.setOnKeyPressed(e -> gameStage.getKeys().add(e.getCode()));
-        scene.setOnKeyReleased(e -> gameStage.getKeys().remove(e.getCode()));
+    public void start(Stage stage) {
+        gameMenu = new GameMenu();
+        Scene scene = new Scene(gameMenu);
+        primaryStage = stage;
         primaryStage.setScene(scene);
         primaryStage.setTitle("Asteroid Game");
         primaryStage.setResizable(false);
         primaryStage.show();
-        new Thread(new GameLoop(gameStage)).start();
-        new Thread(new DrawingLoop(gameStage)).start();
-        new Thread(new GenerateAsteroidTask(gameStage)).start();
+
     }
 
     public static void main(String[] args) {

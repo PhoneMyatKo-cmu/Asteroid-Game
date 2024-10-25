@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import se233.project2.Launcher;
+import se233.project2.controller.GameStageController;
 import se233.project2.model.*;
 
 import java.util.ArrayList;
@@ -31,7 +32,12 @@ public class GameStage extends Pane {
         bgView.setFitHeight(HEIGHT);
         scoreLabel = new Label("0");
         scoreLabel.getStyleClass().add("scoreLabel");
-        getChildren().addAll(bgView, scoreLabel, playerShip);
+        Label countdownLabel = new Label();
+        countdownLabel.getStyleClass().add("countdownLabel");
+        countdownLabel.layoutXProperty().bind(this.widthProperty().subtract(countdownLabel.widthProperty()).divide(2));
+        countdownLabel.layoutYProperty().bind(this.heightProperty().subtract(countdownLabel.heightProperty()).divide(2));
+        getChildren().addAll(bgView, scoreLabel, playerShip,countdownLabel);
+        GameStageController.onLoad(countdownLabel, this);
     }
 
     public PlayerShip getPlayerShip() {
