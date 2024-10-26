@@ -23,6 +23,7 @@ public class GameStage extends Pane {
     private Label scoreLabel;
     private HBox hpBox;
     private boolean running = true, bossRound = false;
+    private  boolean isWon =false;
 
     public GameStage() {
         this.getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
@@ -106,5 +107,13 @@ public class GameStage extends Pane {
 
     public Label getScoreLabel() {
         return scoreLabel;
+    }
+
+    public boolean isWon() {
+        return isWon;
+    }
+
+    public void setWon(boolean won) {
+        this.isWon = won;
     }
 }

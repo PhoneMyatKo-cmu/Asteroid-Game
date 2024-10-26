@@ -6,14 +6,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import se233.project2.Launcher;
 import se233.project2.controller.GameMenuController;
-
-import java.util.Stack;
 
 public class GameMenu extends StackPane {
     private Label titleLbl;
@@ -47,17 +44,18 @@ public class GameMenu extends StackPane {
 
     public void initialize(){
         startBtn.setOnAction(e -> {
-            GameMenuController.onStart(startBtn);
+            GameMenuController.onStart();
         });
 
         helpBtn.setOnAction(e -> {
-            Popup popup = new Popup();
-            TextArea textArea = new TextArea();
+            HowToPlayPopup popup = new HowToPlayPopup();
+            popup.showHowToPlayPopup(Launcher.primaryStage);
+          /*  TextArea textArea = new TextArea();
             textArea.setEditable(false);
             textArea.setWrapText(true);
             textArea.setText("This game is ......");
             popup.getContent().add(textArea);
-            popup.show(this.getScene().getWindow());
+            popup.show(this.getScene().getWindow());*/
         });
     }
 

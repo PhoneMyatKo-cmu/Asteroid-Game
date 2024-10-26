@@ -81,6 +81,10 @@ public class GameLoop implements Runnable {
                     if (movingObject instanceof Asteroid && ((Asteroid) movingObject).getLevel() == 1) {
                         playerShip.increaseScore();
                     }
+                    if(movingObject instanceof Boss && movingObject.isDead()){
+                        gameStage.setWon(true);
+                        gameStage.setRunning(false);
+                    }
                     break;
                 }
             }

@@ -147,5 +147,12 @@ public class DrawingLoop implements Runnable {
                 e.printStackTrace();
             }
         }
+        Platform.runLater(() -> {
+            if(gameStage.isWon())
+                GameStageController.changeToGameOver("Victory",gameStage);
+            else
+                 GameStageController.changeToGameOver("Game Over",gameStage);
+        });
     }
+
 }

@@ -2,9 +2,12 @@ package se233.project2.controller;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import se233.project2.Launcher;
+import se233.project2.view.GameOverMenu;
 import se233.project2.view.GameStage;
 
 public class GameStageController {
@@ -59,6 +62,12 @@ public class GameStageController {
 
         });
 
+    }
+
+    public static void changeToGameOver(String labelText,GameStage gameStage) {
+        GameOverMenu gameOverMenu=new GameOverMenu(gameStage,new Label(labelText));
+        Scene scene=new Scene(gameOverMenu);
+        Launcher.primaryStage.setScene(scene);
     }
 
 }

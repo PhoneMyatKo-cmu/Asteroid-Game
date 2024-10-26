@@ -1,12 +1,11 @@
 package se233.project2.controller;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import se233.project2.Launcher;
 import se233.project2.view.GameStage;
 
 public class GameMenuController {
-    public static void onStart(Button startBtn){
+    public static void onStart(){
         GameStage gameStage = new GameStage();
         Scene scene=new Scene(gameStage);
         scene.setOnKeyPressed((event)->{
