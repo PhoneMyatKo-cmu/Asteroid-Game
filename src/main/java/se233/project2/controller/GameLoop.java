@@ -1,6 +1,8 @@
 package se233.project2.controller;
 
 import javafx.application.Platform;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import se233.project2.model.*;
 import se233.project2.view.GameStage;
 
@@ -26,6 +28,7 @@ public class GameLoop implements Runnable {
         boolean turnLeftPressed = gameStage.getKeys().isPressed(playerShip.getTurnLeftKey());
         boolean turnRightPressed = gameStage.getKeys().isPressed(playerShip.getTurnRightKey());
         boolean shootPressed = gameStage.getKeys().isPressed(playerShip.getShootKey());
+        boolean laserPressed = gameStage.getKeys().isPressed(playerShip.getShootLaserKey());
         if (upPressed && downPressed) {
             playerShip.stop();
         } else if (leftPressed && rightPressed) {
@@ -48,19 +51,22 @@ public class GameLoop implements Runnable {
         } else if (turnRightPressed) {
             playerShip.turnRight();
         }
-        if (shootPressed) {
+        if (laserPressed) {
+            playerShip.shootLaser();
+        } else if (shootPressed) {
             playerShip.shoot();
         }
     }
 
     private void update() {
-        playerShip.move();
+        if (playerShip.isActive())
+            playerShip.move();
         ArrayList<MovingObject> enemyListCloned = (ArrayList<MovingObject>) enemyList.clone();
         ArrayList<Bullet> bulletListCloned = (ArrayList<Bullet>) playerShip.getBulletList().clone();
         ArrayList<Bullet> enemyBulletListCloned = (ArrayList<Bullet>) GameStage.enemyBulletList.clone();
         for (MovingObject movingObject: enemyListCloned) {
             movingObject.move();
-            if (playerShip.isCollided(movingObject) && !playerShip.isDead()) {
+            if (playerShip.isActive() && playerShip.isCollided(movingObject)) {
                 playerShip.stop();
                 playerShip.die();
             }
@@ -74,20 +80,39 @@ public class GameLoop implements Runnable {
         for (Bullet bullet: bulletListCloned) {
             bullet.move();
             for (MovingObject movingObject: enemyListCloned) {
+                if (bullet.getParent() == null) {
+                    break;
+                }
                 if (bullet.isCollided(movingObject)) {
-                    bullet.die();
                     movingObject.die();
                     Platform.runLater(() -> new Explosion(gameStage, movingObject.getX(), movingObject.getY()));
                     if (movingObject instanceof Asteroid && ((Asteroid) movingObject).getLevel() == 1) {
                         playerShip.increaseScore();
                     }
+                    if (bullet instanceof Bomb) {
+                        Platform.runLater(() -> new Explosion(gameStage, bullet.getX(), bullet.getY(), 300.0, 300.0));
+                        Circle circle = new Circle(bullet.getX(), bullet.getY(), 250, Color.TRANSPARENT);
+                        Platform.runLater(() -> gameStage.getChildren().add(circle));
+                        for (MovingObject mv : enemyListCloned) {
+                            if (circle.intersects(mv.getBoundsInParent())) {
+                                mv.die();
+                                Platform.runLater(() -> new Explosion(gameStage, mv.getX(), mv.getY()));
+                                if (mv instanceof Asteroid) {
+                                    if (((Asteroid) mv).getLevel() == 1)
+                                        playerShip.increaseScore();
+                                }
+                            }
+                        }
+                        Platform.runLater(() -> gameStage.getChildren().remove(circle));
+                    }
+                    bullet.die();
                     break;
                 }
             }
         }
         for (Bullet bullet: enemyBulletListCloned) {
             bullet.move();
-            if (bullet.isCollided(playerShip) && !playerShip.isDead()) {
+            if (playerShip.isActive() && playerShip.isCollided(bullet)) {
                 bullet.die();
                 playerShip.stop();
                 playerShip.die();

@@ -1,6 +1,7 @@
 package se233.project2.controller;
 
 import javafx.application.Platform;
+import javafx.scene.transform.Rotate;
 import se233.project2.model.PlayerShip;
 
 public class RespawnTask implements Runnable {
@@ -13,6 +14,7 @@ public class RespawnTask implements Runnable {
     @Override
     public void run() {
 
+        playerShip.setDead(false);
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -21,10 +23,12 @@ public class RespawnTask implements Runnable {
 
         playerShip.setX(350);
         playerShip.setY(500);
-        playerShip.getAnimatedSprite().setRotate(0);
+        Rotate rotate = new Rotate(-playerShip.getAnimatedSprite().getRotate(), playerShip.getWidth()/2, playerShip.getHeight()/2);
+
         Platform.runLater(() -> {
+            playerShip.getHitbox().getTransforms().add(rotate);
+            playerShip.getAnimatedSprite().setRotate(0);
             playerShip.setVisible(true);
-            playerShip.setDead(false);
             playerShip.setActive(true);
         });
     }

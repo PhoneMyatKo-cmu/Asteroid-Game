@@ -2,6 +2,8 @@ package se233.project2.model;
 
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import se233.project2.Launcher;
 import se233.project2.view.GameStage;
 
@@ -16,6 +18,7 @@ public class Asteroid extends Character {
         isDead = false;
         this.level = level;
     }
+
 
     public static void explode(GameStage gameStage, Asteroid asteroid) {
         int level = asteroid.level - 1;
