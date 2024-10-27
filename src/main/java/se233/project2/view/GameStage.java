@@ -32,7 +32,7 @@ public class GameStage extends Pane {
         this.getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
         playerShip = new PlayerShip(350, 500,
                 new AnimatedSprite(new Image(Launcher.class.getResourceAsStream("playership_sprite.png")), 3, 3, 1, 0, 0, 124, 240),
-                3, 62, 120);
+                GameMenu.gameDataMap.getOrDefault("HP", 3), 62, 120);
         enemyList = new ArrayList<>();
         enemyBulletList = new ArrayList<>();
         keys = new Keys();
@@ -64,7 +64,7 @@ public class GameStage extends Pane {
         countdownLabel.getStyleClass().add("countdownLabel");
         countdownLabel.layoutXProperty().bind(this.widthProperty().subtract(countdownLabel.widthProperty()).divide(2));
         countdownLabel.layoutYProperty().bind(this.heightProperty().subtract(countdownLabel.heightProperty()).divide(2));
-        getChildren().addAll(bgView, scoreLabel, playerShip,countdownLabel, hpBox,bossHealthBar);
+        getChildren().addAll(bgView, playerShip, scoreLabel,countdownLabel, hpBox,bossHealthBar);
         GameStageController.onLoad(countdownLabel, this);
     }
 

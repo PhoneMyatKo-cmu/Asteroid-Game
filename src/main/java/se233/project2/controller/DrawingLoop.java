@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 import se233.project2.model.*;
+import se233.project2.view.GameMenu;
 import se233.project2.view.GameStage;
 
 import java.util.ArrayList;
@@ -153,6 +154,7 @@ public class DrawingLoop implements Runnable {
             }
         }
         Platform.runLater(() -> {
+            GameMenu.gameDataMap.put("Points", GameMenu.gameDataMap.getOrDefault("Points", 0) + playerShip.getScore());
             if(gameStage.isWon())
                 GameStageController.changeToGameOver("Victory",gameStage);
             else

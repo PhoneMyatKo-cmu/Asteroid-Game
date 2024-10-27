@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import se233.project2.Launcher;
 import se233.project2.controller.RespawnTask;
+import se233.project2.view.GameMenu;
 import se233.project2.view.GameStage;
 
 import java.util.ArrayList;
@@ -27,10 +28,10 @@ public class PlayerShip extends Character {
     private KeyCode shootKey = KeyCode.SPACE;
     private KeyCode shootLaserKey = KeyCode.UP;
     private boolean isDead, isActive, isImmune;
-    private final int bulletSpeed = 20;
+    private final int bulletSpeed = GameMenu.gameDataMap.getOrDefault("BulletSpeed", 20);
     private ArrayList<Bullet> bulletList;
     private long lastShotTime = 0;
-    private int fireRate = 3;
+    private int fireRate = GameMenu.gameDataMap.getOrDefault("FireRate", 3);
     private int score;
     private Polygon hitbox;
     private final Double[] points = {
@@ -45,7 +46,8 @@ public class PlayerShip extends Character {
         isDead = false;
         isActive = true;
         isImmune = false;
-        animatedSprite.setTimeline(100, 4);
+        animatedSprite.curIndex = 1;
+        animatedSprite.setTimeline(100, 3);
         bulletList = new ArrayList<>();
         score = 0;
         hitbox = new Polygon();

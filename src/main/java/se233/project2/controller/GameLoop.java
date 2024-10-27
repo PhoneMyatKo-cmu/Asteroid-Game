@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import se233.project2.model.*;
+import se233.project2.view.GameMenu;
 import se233.project2.view.GameStage;
 
 import java.util.ArrayList;
@@ -91,6 +92,10 @@ public class GameLoop implements Runnable {
                     Platform.runLater(() -> new Explosion(gameStage, movingObject.getX(), movingObject.getY()));
                     if (movingObject instanceof Asteroid && ((Asteroid) movingObject).getLevel() == 1) {
                         playerShip.increaseScore(1);
+                    } else if (movingObject instanceof EnemyShip) {
+                        playerShip.increaseScore(3);
+                    } else if (movingObject instanceof Boss) {
+                        playerShip.increaseScore(10);
                     }
                     if (bullet instanceof Bomb) {
                         Platform.runLater(() -> new Explosion(gameStage, bullet.getX(), bullet.getY(), 300.0, 300.0));
@@ -108,6 +113,10 @@ public class GameLoop implements Runnable {
                                 if (mv instanceof Asteroid) {
                                     if (((Asteroid) mv).getLevel() == 1)
                                         playerShip.increaseScore(1);
+                                } else if (movingObject instanceof EnemyShip) {
+                                    playerShip.increaseScore(3);
+                                } else if (movingObject instanceof Boss) {
+                                    playerShip.increaseScore(10);
                                 }
 
                             }
