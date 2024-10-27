@@ -11,7 +11,6 @@ import se233.project2.view.GameOverMenu;
 import se233.project2.view.GameStage;
 
 public class GameStageController {
-    private static Logger logger= LogManager.getLogger(GameStageController.class);
     private static void startCountdown(Label countdownLabel, Runnable runnable) {
         countdownLabel.setVisible(true);
         final int[] countdown = {3}; // Starting count
@@ -29,7 +28,6 @@ public class GameStageController {
                         }else{
                             countdownLabel.setText(String.valueOf(countdown[0]));}
                         countdown[0]--;
-                        System.out.println("Countdown: " + countdown[0]);
                     } else {
                         this.stop();
                         countdownLabel.setVisible(false);
@@ -41,8 +39,6 @@ public class GameStageController {
             }
         };
         timer.start();
-
-        logger.info("Countdown finished");
     }
 
     public static void onLoad(Label countdownLabel, GameStage gameStage) {
@@ -59,7 +55,6 @@ public class GameStageController {
             thread.start();
             thread1.start();
             thread2.start();
-
         });
 
     }

@@ -8,6 +8,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import se233.project2.Launcher;
 import se233.project2.controller.RespawnTask;
 import se233.project2.view.GameStage;
@@ -15,6 +17,7 @@ import se233.project2.view.GameStage;
 import java.util.ArrayList;
 
 public class PlayerShip extends Character {
+    private static final Logger logger = LogManager.getLogger(PlayerShip.class);
     private KeyCode moveUpKey = KeyCode.W;
     private KeyCode moveLeftKey = KeyCode.A;
     private KeyCode moveDownKey = KeyCode.S;
@@ -23,7 +26,7 @@ public class PlayerShip extends Character {
     private KeyCode turnRightKey = KeyCode.RIGHT;
     private KeyCode shootKey = KeyCode.SPACE;
     private KeyCode shootLaserKey = KeyCode.UP;
-    private boolean isDead, isActive;
+    private boolean isDead, isActive, isImmune;
     private final int bulletSpeed = 20;
     private ArrayList<Bullet> bulletList;
     private long lastShotTime = 0;
@@ -41,12 +44,24 @@ public class PlayerShip extends Character {
         super(x, y, 0, 0, animatedSprite, hp, width, height);
         isDead = false;
         isActive = true;
+        isImmune = false;
+        animatedSprite.setTimeline(100, 4);
         bulletList = new ArrayList<>();
         score = 0;
         hitbox = new Polygon();
         hitbox.getPoints().addAll(points);
         hitbox.setFill(Color.TRANSPARENT);
         this.getChildren().add(hitbox);
+    }
+
+    @Override
+    public void draw() {
+        Platform.runLater( () -> {
+            if (getAx() != 0 || getAy() != 0)
+                animatedSprite.start();
+            this.setTranslateX(getX() - animatedSprite.getFitWidth()/2);
+            this.setTranslateY(getY() - animatedSprite.getFitHeight()/2);
+        });
     }
 
     @Override
@@ -72,6 +87,7 @@ public class PlayerShip extends Character {
             Rotate rotate = new Rotate(-5, getWidth()/2, getHeight()/2);
             hitbox.getTransforms().add(rotate);
         });
+        logger.trace(String.format("Turned Left: %.2f", animatedSprite.getRotate()));
     }
     public void turnRight() {
         Platform.runLater(() -> {
@@ -79,6 +95,7 @@ public class PlayerShip extends Character {
             Rotate rotate = new Rotate(5, getWidth()/2, getHeight()/2);
             hitbox.getTransforms().add(rotate);
         });
+        logger.trace(String.format("Turned Right: %.2f", animatedSprite.getRotate()));
     }
     public void die() {
         isDead = true;
@@ -103,9 +120,10 @@ public class PlayerShip extends Character {
         bulletList.add(bullet);
         Platform.runLater(() -> ((Pane) getParent()).getChildren().add(bullet));
         lastShotTime = System.currentTimeMillis();
+        logger.debug(String.format("Shot Bullet: x:%.2f, y:%.2f, vx:%.2f, vy:%.2f, direction:%.2f", bx, by, bvx, bvy, bullet.animatedSprite.getRotate() - 90));
     }
 
-    public void shootLaser() {
+    public void shootBomb() {
         if (System.currentTimeMillis() - lastShotTime < 1000 || !isActive()) {
             return;
         }
@@ -125,6 +143,7 @@ public class PlayerShip extends Character {
         Platform.runLater(() -> ((Pane) getParent()).getChildren().add(bomb));
         bulletList.add(bomb);
         lastShotTime = System.currentTimeMillis();
+        logger.debug(String.format("Shot Bomb: x:%.2f, y:%.2f, vx:%.2f, vy:%.2f, direction:%.2f", bx, by, bvx, bvy, bomb.animatedSprite.getRotate()));
     }
 
     public void deathRender() {
@@ -133,10 +152,13 @@ public class PlayerShip extends Character {
             Explosion explosion = new Explosion((Pane) this.getParent(), this.getX(), this.getY());
 //            playerShip.setActive(false);
         });
+        logger.info(String.format("Died: x:%.2f, y:%.2f", getX(), getY()));
     }
 
     public void respawnRender() {
+        isImmune = true;
         new Thread(new RespawnTask(this)).start();
+        logger.info(String.format("Respawned"));
     }
 
 
@@ -150,12 +172,21 @@ public class PlayerShip extends Character {
         return score;
     }
 
-    public void increaseScore() {
-        score += 1;
+    public void increaseScore(int score) {
+        this.score += score;
+        logger.info(String.format("Increased Score: %d, Score: %d", score, this.score));
     }
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public boolean isImmune() {
+        return isImmune;
+    }
+
+    public void setImmune(boolean immune) {
+        this.isImmune = immune;
     }
 
     public void setActive(boolean active) {

@@ -21,6 +21,14 @@ public class EnemyShip extends Character {
         isDead = true;
     }
 
+    public void aimPlayerShip(PlayerShip playerShip) {
+        if (this.getY() > playerShip.getY()) {
+            Platform.runLater(() -> this.animatedSprite.setRotate(180));
+        } else {
+            Platform.runLater(() -> this.animatedSprite.setRotate(0));
+        }
+    }
+
     public void shoot() {
         if (System.currentTimeMillis() - lastShotTime < 1000/fireRate) {
             return;

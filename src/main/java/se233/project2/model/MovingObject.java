@@ -2,12 +2,15 @@ package se233.project2.model;
 
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import se233.project2.view.GameStage;
 
 public abstract class MovingObject extends Pane {
     private double x, y, vx, vy, ax, ay, drag = 5; // x & y coordinates and velocities
     protected AnimatedSprite animatedSprite;
     protected boolean isDead;
+    private static final Logger logger = LogManager.getLogger(MovingObject.class);
 
     public MovingObject(double x, double y, double ax, double ay, AnimatedSprite animatedSprite, double width, double height) {
         this.x = x;
@@ -29,21 +32,23 @@ public abstract class MovingObject extends Pane {
     public abstract void die();
 
     public void move() {
+        double prevX = x, prevY = y;
         vx += ax;
         vy += ay;
         x += vx;
         y += vy;
         if (x > GameStage.WIDTH + animatedSprite.getFitWidth()/2) {
-            x = 0;
+            x = 0; y = GameStage.HEIGHT - y;
         } else if (x < 0 - animatedSprite.getFitWidth()/2) {
-            x = GameStage.WIDTH;
+            x = GameStage.WIDTH; y = GameStage.HEIGHT - y;
         }
         if (y > GameStage.HEIGHT + animatedSprite.getFitHeight()/2) {
-            y = 0;
+            y = 0; x = GameStage.WIDTH - x;
         } else if (y < 0 - animatedSprite.getFitHeight()/2) {
-            y = GameStage.HEIGHT;
+            y = GameStage.HEIGHT; x = GameStage.WIDTH - x;
         }
-
+        if (prevX != x || prevY != y)
+            logger.trace(String.format("%s moved from:(%.2f, %.2f) to:(%.2f, %.2f)", this.getClass().toString(), prevX, prevY, x, y));
     }
 
     public void draw() {

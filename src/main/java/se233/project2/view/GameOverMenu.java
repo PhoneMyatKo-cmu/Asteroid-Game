@@ -28,7 +28,7 @@ public class GameOverMenu extends StackPane {
     }
 
     public void initialize() {
-        backgroundImage=new Image(Launcher.class.getResourceAsStream("GS_background.jpg"));
+        backgroundImage=new Image(Launcher.class.getResourceAsStream("bg.jpg"));
         backImageView=new ImageView(backgroundImage);
         backImageView.setFitWidth(GameStage.WIDTH);
         backImageView.setFitHeight(GameStage.HEIGHT);

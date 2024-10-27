@@ -52,7 +52,7 @@ public class GameLoop implements Runnable {
             playerShip.turnRight();
         }
         if (laserPressed) {
-            playerShip.shootLaser();
+            playerShip.shootBomb();
         } else if (shootPressed) {
             playerShip.shoot();
         }
@@ -66,7 +66,7 @@ public class GameLoop implements Runnable {
         ArrayList<Bullet> enemyBulletListCloned = (ArrayList<Bullet>) GameStage.enemyBulletList.clone();
         for (MovingObject movingObject: enemyListCloned) {
             movingObject.move();
-            if (playerShip.isActive() && playerShip.isCollided(movingObject)) {
+            if (playerShip.isActive() && !playerShip.isImmune() && playerShip.isCollided(movingObject)) {
                 playerShip.stop();
                 playerShip.die();
             }
@@ -87,30 +87,27 @@ public class GameLoop implements Runnable {
                     movingObject.die();
                     if(movingObject instanceof  Boss){
                         Platform.runLater(()->gameStage.updateBossHealth(((Boss) movingObject).getHp()));
-                        System.out.println("Hit Boss:"+((Boss) movingObject).getHp());
                     }
                     Platform.runLater(() -> new Explosion(gameStage, movingObject.getX(), movingObject.getY()));
                     if (movingObject instanceof Asteroid && ((Asteroid) movingObject).getLevel() == 1) {
-                        playerShip.increaseScore();
+                        playerShip.increaseScore(1);
                     }
                     if (bullet instanceof Bomb) {
                         Platform.runLater(() -> new Explosion(gameStage, bullet.getX(), bullet.getY(), 300.0, 300.0));
-                        Circle circle = new Circle(bullet.getX(), bullet.getY(), 250, Color.TRANSPARENT);
+                        Circle circle = new Circle(bullet.getX(), bullet.getY(), 100, Color.TRANSPARENT);
                         Platform.runLater(() -> gameStage.getChildren().add(circle));
                         for (MovingObject mv : enemyListCloned) {
                             if (circle.intersects(mv.getBoundsInParent())) {
-
-
                                 mv.die();
                                 if(mv instanceof Boss) {
-                                    ((Boss) mv).setHp(((Boss) mv).getHp() - 4);
-                                    gameStage.updateBossHealth(((Boss) mv).getHp());
+                                    ((Boss) mv).setHp(((Boss) mv).getHp() - 3);
+                                    Platform.runLater(() -> gameStage.updateBossHealth(((Boss) mv).getHp()));
                                 }
 
                                 Platform.runLater(() -> new Explosion(gameStage, mv.getX(), mv.getY()));
                                 if (mv instanceof Asteroid) {
                                     if (((Asteroid) mv).getLevel() == 1)
-                                        playerShip.increaseScore();
+                                        playerShip.increaseScore(1);
                                 }
 
                             }
@@ -118,7 +115,6 @@ public class GameLoop implements Runnable {
                         Platform.runLater(() -> gameStage.getChildren().remove(circle));
                     }
                     if(movingObject instanceof Boss && movingObject.isDead()){
-                        System.out.println("Boss died");
                         gameStage.setRunning(false);
                         gameStage.setWon(true);
                     }
@@ -131,7 +127,7 @@ public class GameLoop implements Runnable {
         }
         for (Bullet bullet: enemyBulletListCloned) {
             bullet.move();
-            if (playerShip.isActive() && playerShip.isCollided(bullet)) {
+            if (playerShip.isActive() && !playerShip.isImmune() && playerShip.isCollided(bullet)) {
                 bullet.die();
                 playerShip.stop();
                 playerShip.die();

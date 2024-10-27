@@ -66,8 +66,7 @@ public class DrawingLoop implements Runnable {
                 Platform.runLater(() -> gameStage.getHpBox().getChildren().removeLast());
                 playerShip.deathRender();
                 playerShip.setActive(false);
-                System.out.println(playerShip.getHp());
-            } else {
+            } else if (playerShip.getHp() > 0) {
                 playerShip.respawnRender();
             }
         }
@@ -108,9 +107,10 @@ public class DrawingLoop implements Runnable {
                         Asteroid.explode(gameStage, (Asteroid) movingObject);
                     }
                 }
-                if (movingObject instanceof Boss) {
+                if (movingObject instanceof EnemyShip)
+                    ((EnemyShip) movingObject).aimPlayerShip(playerShip);
+                if (movingObject instanceof Boss)
                     ((Boss) movingObject).aimPlayerShip(playerShip);
-                }
                 movingObject.draw();
             }
             synchronized (gameStage.getEnemyList()) {
