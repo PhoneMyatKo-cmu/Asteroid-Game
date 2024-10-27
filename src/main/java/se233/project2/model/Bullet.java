@@ -10,7 +10,7 @@ public class Bullet extends MovingObject {
         super(x, y, vx, vy, animatedSprite, width, height);
         isDead = false;
         bulletLife = 25;
-        animatedSprite.setTimeline(200, 3);
+        animatedSprite.setTimeline(30, 3);
     }
 
     @Override

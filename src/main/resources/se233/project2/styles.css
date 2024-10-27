@@ -36,3 +36,12 @@
     -fx-background-color: rgba(150, 150, 150, 0.8); /* Lighten on hover */
     -fx-cursor: hand;
 }
+
+.bossHealthBar {
+    -fx-accent: green;               /* Health fill color */
+    -fx-background-color: black;    /* Bar background color */
+    -fx-border-color: white;        /* Border color */
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}

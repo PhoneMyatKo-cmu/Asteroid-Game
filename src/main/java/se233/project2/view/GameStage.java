@@ -2,6 +2,7 @@ package se233.project2.view;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -25,6 +26,7 @@ public class GameStage extends Pane {
     private HBox hpBox;
     private boolean running = true, bossRound = false;
     private  boolean isWon =false;
+    private ProgressBar bossHealthBar;
 
     public GameStage() {
         this.getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
@@ -34,6 +36,13 @@ public class GameStage extends Pane {
         enemyList = new ArrayList<>();
         enemyBulletList = new ArrayList<>();
         keys = new Keys();
+        bossHealthBar = new ProgressBar();
+        bossHealthBar.setProgress(1.0);
+        bossHealthBar.setVisible(false);
+        bossHealthBar.setTranslateX(600);
+        bossHealthBar.setTranslateY(20);
+        bossHealthBar.getStyleClass().add("bossHealthBar");
+        bossHealthBar.setPrefWidth(150);
         bgImage = new Image(Launcher.class.getResourceAsStream("bg.jpg"));
         hpBox = new HBox(5);
         Image shipHpImage = playerShip.getAnimatedSprite().getImage();
@@ -55,7 +64,7 @@ public class GameStage extends Pane {
         countdownLabel.getStyleClass().add("countdownLabel");
         countdownLabel.layoutXProperty().bind(this.widthProperty().subtract(countdownLabel.widthProperty()).divide(2));
         countdownLabel.layoutYProperty().bind(this.heightProperty().subtract(countdownLabel.heightProperty()).divide(2));
-        getChildren().addAll(bgView, scoreLabel, playerShip,countdownLabel, hpBox);
+        getChildren().addAll(bgView, scoreLabel, playerShip,countdownLabel, hpBox,bossHealthBar);
         GameStageController.onLoad(countdownLabel, this);
     }
 
@@ -117,5 +126,22 @@ public class GameStage extends Pane {
 
     public void setWon(boolean won) {
         this.isWon = won;
+    }
+
+    public ProgressBar getBossHealthBar() {
+        return bossHealthBar;
+    }
+    public void updateBossHealth(int currentHealth) {
+        bossHealthBar.setProgress(currentHealth/50.0);
+        if (currentHealth/50.0 < 0.5) {
+            bossHealthBar.setStyle(
+                    "-fx-accent: red; " +
+                            "-fx-background-color: black; " +
+                            "-fx-border-color: white; " +
+                            "-fx-border-width: 2px; " +
+                            "-fx-border-radius: 5px; " +
+                            "-fx-background-radius: 5px;"
+            );
+        }
     }
 }

@@ -85,6 +85,10 @@ public class GameLoop implements Runnable {
                 }
                 if (bullet.isCollided(movingObject)) {
                     movingObject.die();
+                    if(movingObject instanceof  Boss){
+                        Platform.runLater(()->gameStage.updateBossHealth(((Boss) movingObject).getHp()));
+                        System.out.println("Hit Boss:"+((Boss) movingObject).getHp());
+                    }
                     Platform.runLater(() -> new Explosion(gameStage, movingObject.getX(), movingObject.getY()));
                     if (movingObject instanceof Asteroid && ((Asteroid) movingObject).getLevel() == 1) {
                         playerShip.increaseScore();
@@ -95,19 +99,34 @@ public class GameLoop implements Runnable {
                         Platform.runLater(() -> gameStage.getChildren().add(circle));
                         for (MovingObject mv : enemyListCloned) {
                             if (circle.intersects(mv.getBoundsInParent())) {
+
+
                                 mv.die();
+                                if(mv instanceof Boss) {
+                                    ((Boss) mv).setHp(((Boss) mv).getHp() - 4);
+                                    gameStage.updateBossHealth(((Boss) mv).getHp());
+                                }
+
                                 Platform.runLater(() -> new Explosion(gameStage, mv.getX(), mv.getY()));
                                 if (mv instanceof Asteroid) {
                                     if (((Asteroid) mv).getLevel() == 1)
                                         playerShip.increaseScore();
                                 }
+
                             }
                         }
                         Platform.runLater(() -> gameStage.getChildren().remove(circle));
                     }
+                    if(movingObject instanceof Boss && movingObject.isDead()){
+                        System.out.println("Boss died");
+                        gameStage.setRunning(false);
+                        gameStage.setWon(true);
+                    }
                     bullet.die();
                     break;
                 }
+
+
             }
         }
         for (Bullet bullet: enemyBulletListCloned) {

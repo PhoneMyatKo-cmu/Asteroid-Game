@@ -1,6 +1,8 @@
 package se233.project2.controller;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
@@ -35,6 +37,9 @@ public class DrawingLoop implements Runnable {
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
             pause.setOnFinished(event -> gameStage.getChildren().remove(warningLabel));
             pause.play();
+            Timeline timeline=new Timeline(new KeyFrame(Duration.millis(1000), event -> {gameStage.getBossHealthBar().setVisible(true);}));
+            timeline.setCycleCount(1);
+            timeline.play();
         });
     }
 
