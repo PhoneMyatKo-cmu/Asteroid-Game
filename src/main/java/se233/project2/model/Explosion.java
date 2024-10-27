@@ -15,12 +15,16 @@ public class Explosion extends ImageView {
     private Pane gamePane;
 
     public Explosion(Pane gamePane, double x, double y) {
+        this(gamePane, x, y, 100, 100);
+    }
+
+    public Explosion(Pane gamePane, double x, double y, double width, double height) {
         this.gamePane = gamePane;
         setImage(new Image(Launcher.class.getResourceAsStream("sprite_sheet/explosion_01_strip13.png")));  // Path to your explosion image
-        setFitWidth(100);  // Adjust the size of the explosion
-        setFitHeight(100);
-        setLayoutX(x);
-        setLayoutY(y);
+        setFitWidth(width);  // Adjust the size of the explosion
+        setFitHeight(height);
+        setLayoutX(x - width/2);
+        setLayoutY(y - height/2);
         this.setViewport(new Rectangle2D(424.67, 0, 212.33, 190));
         this.gamePane.getChildren().add(this);  // Add explosion to the game scene
 

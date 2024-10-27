@@ -1,5 +1,6 @@
 package se233.project2.view;
 
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,8 +29,8 @@ public class GameStage extends Pane {
     public GameStage() {
         this.getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
         playerShip = new PlayerShip(350, 500,
-                new AnimatedSprite(new Image(Launcher.class.getResourceAsStream("playerShip3_red.png")), 1, 1, 1, 0, 0, 98, 75),
-                3, 60, 50);
+                new AnimatedSprite(new Image(Launcher.class.getResourceAsStream("playership_sprite.png")), 3, 3, 1, 0, 0, 124, 240),
+                3, 62, 120);
         enemyList = new ArrayList<>();
         enemyBulletList = new ArrayList<>();
         keys = new Keys();
@@ -38,8 +39,9 @@ public class GameStage extends Pane {
         Image shipHpImage = playerShip.getAnimatedSprite().getImage();
         for (int i = 0; i < playerShip.getHp(); i++) {
             ImageView shipHpImageView = new ImageView(shipHpImage);
-            shipHpImageView.setFitWidth(20);
-            shipHpImageView.setFitHeight(15);
+            shipHpImageView.setViewport(new Rectangle2D(0, 0, 124, 120));
+            shipHpImageView.setFitWidth(25);
+            shipHpImageView.setFitHeight(25);
             hpBox.getChildren().add(shipHpImageView);
         }
         ImageView bgView = new ImageView(bgImage);

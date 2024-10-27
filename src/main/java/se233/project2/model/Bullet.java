@@ -1,5 +1,7 @@
 package se233.project2.model;
 
+import javafx.application.Platform;
+
 public class Bullet extends MovingObject {
     private boolean isDead;
     private int bulletLife;
@@ -8,6 +10,7 @@ public class Bullet extends MovingObject {
         super(x, y, vx, vy, animatedSprite, width, height);
         isDead = false;
         bulletLife = 25;
+        animatedSprite.setTimeline(200, 3);
     }
 
     @Override
@@ -24,8 +27,22 @@ public class Bullet extends MovingObject {
         isDead = true;
     }
 
+    @Override
+    public void draw() {
+        Platform.runLater( () -> {
+            if (animatedSprite.curIndex < 3)
+                animatedSprite.start();
+            this.setTranslateX(getX() - animatedSprite.getFitWidth() / 2);
+            this.setTranslateY(getY() - animatedSprite.getFitHeight() / 2);
+        });
+    }
+
     public boolean isDead() {
         return isDead;
+    }
+
+    public void setBulletLife(int life) {
+        this.bulletLife = life;
     }
 
 }

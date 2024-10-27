@@ -40,4 +40,9 @@ public class AnimatedSprite extends ImageView {
         final int y = curRowIndex * height + offsetY;
         this.setViewport(new Rectangle2D(x, y, width, height));
     }
+
+    public void setTimeline(int delay, int cycleCount) {
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(delay), e -> tick()));
+        timeline.setCycleCount(cycleCount);
+    }
 }

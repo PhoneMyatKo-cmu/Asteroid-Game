@@ -19,8 +19,8 @@ public abstract class MovingObject extends Pane {
         this.animatedSprite = animatedSprite;
         this.animatedSprite.setFitWidth(width);
         this.animatedSprite.setFitHeight(height);
-        setTranslateX(this.x - animatedSprite.width/2);
-        setTranslateY(this.y - animatedSprite.height/2);
+        setTranslateX(this.x - animatedSprite.getFitWidth()/2);
+        setTranslateY(this.y - animatedSprite.getFitHeight()/2);
         getChildren().add(animatedSprite);
         setWidth(width);
         setHeight(height);
@@ -33,14 +33,14 @@ public abstract class MovingObject extends Pane {
         vy += ay;
         x += vx;
         y += vy;
-        if (x > GameStage.WIDTH + animatedSprite.width/2) {
+        if (x > GameStage.WIDTH + animatedSprite.getFitWidth()/2) {
             x = 0;
-        } else if (x < 0 - animatedSprite.width/2) {
+        } else if (x < 0 - animatedSprite.getFitWidth()/2) {
             x = GameStage.WIDTH;
         }
-        if (y > GameStage.HEIGHT + animatedSprite.height/2) {
+        if (y > GameStage.HEIGHT + animatedSprite.getFitHeight()/2) {
             y = 0;
-        } else if (y < 0 - animatedSprite.height/2) {
+        } else if (y < 0 - animatedSprite.getFitHeight()/2) {
             y = GameStage.HEIGHT;
         }
 
@@ -49,8 +49,8 @@ public abstract class MovingObject extends Pane {
     public void draw() {
         Platform.runLater( () -> {
             animatedSprite.start();
-            this.setTranslateX(x - animatedSprite.width/2);
-            this.setTranslateY(y - animatedSprite.height/2);
+            this.setTranslateX(x - animatedSprite.getFitWidth()/2);
+            this.setTranslateY(y - animatedSprite.getFitHeight()/2);
         });
     }
 

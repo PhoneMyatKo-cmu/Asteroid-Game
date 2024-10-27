@@ -50,10 +50,10 @@ public class Boss  extends Character{
         double bx = -Math.sin(Math.toRadians(animatedSprite.getRotate())) * animatedSprite.getFitHeight()/2 + getX();
         double by = Math.cos(Math.toRadians(animatedSprite.getRotate())) * animatedSprite.getFitHeight()/2 + getY();
 
-        Bullet bullet = new Bullet(bx, by, 0, 0, new AnimatedSprite(new Image(Launcher.class.getResource("laserGreen09.png").toString()), 1, 1, 1, 0, 0, 13, 57), 13, 20);
+        Bullet bullet = new Bullet(bx, by, 0, 0, new AnimatedSprite(new Image(Launcher.class.getResource("bullet_sprite_red.png").toString()), 4, 4, 1, 0, 234, 105, 117), 30, 25);
         bullet.setVx(bvx);
         bullet.setVy(bvy);
-        Platform.runLater(() -> bullet.animatedSprite.setRotate(animatedSprite.getRotate()));
+        Platform.runLater(() -> bullet.animatedSprite.setRotate(animatedSprite.getRotate() + 90));
         GameStage.enemyBulletList.add(bullet);
         Platform.runLater(() -> ((Pane) getParent()).getChildren().add(bullet));
         lastShotTime = System.currentTimeMillis();
