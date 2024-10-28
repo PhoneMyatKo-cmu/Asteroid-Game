@@ -27,6 +27,7 @@ public class GameStage extends Pane {
     private boolean running = true, bossRound = false;
     private  boolean isWon =false;
     private ProgressBar bossHealthBar;
+    private Label specialAttackCountLbl;
 
     public GameStage() {
         this.getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
@@ -59,12 +60,15 @@ public class GameStage extends Pane {
         scoreLabel = new Label("0");
         scoreLabel.getStyleClass().add("scoreLabel");
         scoreLabel.setTranslateX(10); scoreLabel.setTranslateY(10);
+        specialAttackCountLbl = new Label("Bombs:"+playerShip.getSpecialAttacKCount());
+        specialAttackCountLbl.getStyleClass().add("scoreLabel");
+        specialAttackCountLbl.setTranslateX(10); specialAttackCountLbl.setTranslateY(80);
         hpBox.setTranslateX(10); hpBox.setTranslateY(50);
         Label countdownLabel = new Label();
         countdownLabel.getStyleClass().add("countdownLabel");
         countdownLabel.layoutXProperty().bind(this.widthProperty().subtract(countdownLabel.widthProperty()).divide(2));
         countdownLabel.layoutYProperty().bind(this.heightProperty().subtract(countdownLabel.heightProperty()).divide(2));
-        getChildren().addAll(bgView, playerShip, scoreLabel,countdownLabel, hpBox,bossHealthBar);
+        getChildren().addAll(bgView, playerShip, scoreLabel,specialAttackCountLbl,countdownLabel, hpBox,bossHealthBar);
         GameStageController.onLoad(countdownLabel, this);
     }
 
@@ -143,5 +147,9 @@ public class GameStage extends Pane {
                             "-fx-background-radius: 5px;"
             );
         }
+    }
+
+    public Label getSpecialAttackCountLbl() {
+        return specialAttackCountLbl;
     }
 }

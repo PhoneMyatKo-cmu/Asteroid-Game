@@ -6,6 +6,8 @@ import javafx.scene.layout.Pane;
 import se233.project2.Launcher;
 import se233.project2.view.GameStage;
 
+import java.util.HashMap;
+
 public class Boss  extends Character{
     private long lastShotTime = 0;
     private int fireRate = 1;
@@ -71,7 +73,6 @@ public class Boss  extends Character{
         double deltaX = playerShip.getX() - this.getX();
         double deltaY = playerShip.getY() - this.getY();
         double angle = Math.atan2(deltaY, deltaX);
-
         Platform.runLater(() -> this.animatedSprite.setRotate(Math.toDegrees(angle) - 90));
     }
 }

@@ -57,7 +57,9 @@ public class DrawingLoop implements Runnable {
 
         Platform.runLater(() -> {
             gameStage.getScoreLabel().setText(playerShip.getScore() + "");
+            gameStage.getSpecialAttackCountLbl().setText("Bombs:"+playerShip.getSpecialAttacKCount());
         });
+
     }
 
     private void updatePlayerShip() {

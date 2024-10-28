@@ -34,6 +34,7 @@ public class PlayerShip extends Character {
     private int fireRate = GameMenu.gameDataMap.getOrDefault("FireRate", 3);
     private int score;
     private Polygon hitbox;
+    private int specialAttacKCount;
     private final Double[] points = {
             31.25, 11.5,
             6.25, 44.0,
@@ -53,6 +54,7 @@ public class PlayerShip extends Character {
         hitbox = new Polygon();
         hitbox.getPoints().addAll(points);
         hitbox.setFill(Color.TRANSPARENT);
+        specialAttacKCount=3;
         this.getChildren().add(hitbox);
     }
 
@@ -126,7 +128,7 @@ public class PlayerShip extends Character {
     }
 
     public void shootBomb() {
-        if (System.currentTimeMillis() - lastShotTime < 1000 || !isActive()) {
+        if (System.currentTimeMillis() - lastShotTime < 1000 || !isActive( ) || specialAttacKCount<=0) {
             return;
         }
         double bvx = Math.sin(Math.toRadians(animatedSprite.getRotate())) * bulletSpeed;
@@ -145,6 +147,7 @@ public class PlayerShip extends Character {
         Platform.runLater(() -> ((Pane) getParent()).getChildren().add(bomb));
         bulletList.add(bomb);
         lastShotTime = System.currentTimeMillis();
+        specialAttacKCount--;
         logger.debug(String.format("Shot Bomb: x:%.2f, y:%.2f, vx:%.2f, vy:%.2f, direction:%.2f", bx, by, bvx, bvy, bomb.animatedSprite.getRotate()));
     }
 
@@ -232,5 +235,13 @@ public class PlayerShip extends Character {
 
     public Polygon getHitbox() {
         return hitbox;
+    }
+
+    public int getSpecialAttacKCount() {
+        return specialAttacKCount;
+    }
+
+    public void setSpecialAttacKCount(int specialAttacKCount) {
+        this.specialAttacKCount = specialAttacKCount;
     }
 }
