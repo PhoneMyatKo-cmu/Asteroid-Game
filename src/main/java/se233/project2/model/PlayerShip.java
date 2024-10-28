@@ -124,7 +124,7 @@ public class PlayerShip extends Character {
         bulletList.add(bullet);
         Platform.runLater(() -> ((Pane) getParent()).getChildren().add(bullet));
         lastShotTime = System.currentTimeMillis();
-        logger.debug(String.format("Shot Bullet: x:%.2f, y:%.2f, vx:%.2f, vy:%.2f, direction:%.2f", bx, by, bvx, bvy, bullet.animatedSprite.getRotate() - 90));
+        logger.debug(String.format("Shot Bullet: x:%.2f, y:%.2f, vx:%.2f, vy:%.2f, direction:%.2f", bx, by, bvx, bvy, bullet.animatedSprite.getRotate() + 90));
     }
 
     public void shootBomb() {

@@ -84,7 +84,9 @@ public class GameLoop implements Runnable {
                 if (bullet.getParent() == null) {
                     break;
                 }
+                System.out.println("outside iscollided");
                 if (bullet.isCollided(movingObject)) {
+                    System.out.println("inside");
                     movingObject.die();
                     if(movingObject instanceof  Boss){
                         Platform.runLater(()->gameStage.updateBossHealth(((Boss) movingObject).getHp()));
@@ -128,6 +130,7 @@ public class GameLoop implements Runnable {
                         gameStage.setWon(true);
                     }
                     bullet.die();
+                    System.out.println("bullet " + bullet + " is dead");
                     break;
                 }
 
