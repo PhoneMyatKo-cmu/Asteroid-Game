@@ -16,9 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MovingObjectTest {
     MovingObject movingObject;
 
-    @BeforeAll
-    public static void initJfxRuntime() { javafx.application.Platform.startup(() -> {}); }
-
     @BeforeEach
     public void setup() {
         movingObject = new PlayerShip(0, 0, new AnimatedSprite(new Image(getClass().getResourceAsStream("playership_sprite.png")), 3, 3, 1, 0, 0, 124, 240), 3, 62, 120);

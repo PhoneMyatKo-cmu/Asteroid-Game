@@ -13,9 +13,6 @@ import se233.project2.model.PlayerShip;
 public class PlayerShipTest {
     PlayerShip playerShip;
 
-    @BeforeAll
-    public static void initJfxRuntime() { javafx.application.Platform.startup(() -> {}); }
-
     @BeforeEach
     public void setup() {
         Pane pane = new Pane();

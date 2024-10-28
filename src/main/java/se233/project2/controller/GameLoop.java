@@ -81,12 +81,10 @@ public class GameLoop implements Runnable {
         for (Bullet bullet: bulletListCloned) {
             bullet.move();
             for (MovingObject movingObject: enemyListCloned) {
-                if (bullet.getParent() == null) {
-                    break;
-                }
-                System.out.println("outside iscollided");
+//                if (bullet.getParent() == null) {
+//                    break;
+//                }
                 if (bullet.isCollided(movingObject)) {
-                    System.out.println("inside");
                     movingObject.die();
                     if(movingObject instanceof  Boss){
                         Platform.runLater(()->gameStage.updateBossHealth(((Boss) movingObject).getHp()));
@@ -97,7 +95,7 @@ public class GameLoop implements Runnable {
                     } else if (movingObject instanceof EnemyShip) {
                         playerShip.increaseScore(3);
                     } else if (movingObject instanceof Boss) {
-                        playerShip.increaseScore(10);
+                        playerShip.increaseScore(5);
                     }
                     if (bullet instanceof Bomb) {
                         Platform.runLater(() -> new Explosion(gameStage, bullet.getX(), bullet.getY(), 300.0, 300.0));
@@ -118,7 +116,7 @@ public class GameLoop implements Runnable {
                                 } else if (movingObject instanceof EnemyShip) {
                                     playerShip.increaseScore(3);
                                 } else if (movingObject instanceof Boss) {
-                                    playerShip.increaseScore(10);
+                                    playerShip.increaseScore(5);
                                 }
 
                             }
@@ -130,7 +128,6 @@ public class GameLoop implements Runnable {
                         gameStage.setWon(true);
                     }
                     bullet.die();
-                    System.out.println("bullet " + bullet + " is dead");
                     break;
                 }
 
