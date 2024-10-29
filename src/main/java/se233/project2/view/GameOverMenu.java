@@ -10,7 +10,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import se233.project2.Launcher;
 import se233.project2.controller.GameMenuController;
-import se233.project2.model.GameState;
 
 public class GameOverMenu extends StackPane {
     public GameStage gameStage;

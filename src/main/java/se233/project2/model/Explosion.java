@@ -7,6 +7,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import se233.project2.Launcher;
 
@@ -28,6 +30,9 @@ public class Explosion extends ImageView {
         this.setViewport(new Rectangle2D(424.67, 0, 212.33, 190));
         this.gamePane.getChildren().add(this);  // Add explosion to the game scene
 
+        Media explosionSound = new Media(Launcher.class.getResource("audio/Explosion.wav").toString());
+        MediaPlayer explosionPlayer = new MediaPlayer(explosionSound);
+        explosionPlayer.play();
         // Optional fade-out effect to make the explosion disappear smoothly
         FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), this);
         fadeTransition.setFromValue(1.0);

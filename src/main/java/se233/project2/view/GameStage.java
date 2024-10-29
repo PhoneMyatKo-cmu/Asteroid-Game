@@ -7,6 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import se233.project2.Launcher;
 import se233.project2.controller.GameStageController;
 import se233.project2.model.*;
@@ -14,6 +16,7 @@ import se233.project2.model.*;
 import java.util.ArrayList;
 
 public class GameStage extends Pane {
+    public MediaPlayer themePlayer;
     public static final double WIDTH = 800;
     public static final double HEIGHT = 600;
     private ArrayList<MovingObject> enemyList;
@@ -30,10 +33,15 @@ public class GameStage extends Pane {
     private Label specialAttackCountLbl;
 
     public GameStage() {
+        Media theme = new Media(Launcher.class.getResource("audio/game_background.mp3").toString());
+        themePlayer = new MediaPlayer(theme);
+        themePlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        themePlayer.setVolume(0.5);
+        themePlayer.play();
         this.getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
         playerShip = new PlayerShip(350, 500,
                 new AnimatedSprite(new Image(Launcher.class.getResourceAsStream("playership_sprite.png")), 3, 3, 1, 0, 0, 124, 240),
-                GameMenu.gameDataMap.getOrDefault("HP", 3), 62, 120);
+                GameMenu.gameDataMap.getOrDefault("HP", 3), 62, 120, GameMenu.gameDataMap.getOrDefault("Bomb", 3));
         enemyList = new ArrayList<>();
         enemyBulletList = new ArrayList<>();
         keys = new Keys();

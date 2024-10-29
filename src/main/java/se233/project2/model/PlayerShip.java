@@ -5,6 +5,8 @@ import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
@@ -42,7 +44,7 @@ public class PlayerShip extends Character {
             55.25, 44.0
     };
 
-    public PlayerShip(double x, double y, AnimatedSprite animatedSprite, int hp, double width, double height) {
+    public PlayerShip(double x, double y, AnimatedSprite animatedSprite, int hp, double width, double height, int specialAttacKCount) {
         super(x, y, 0, 0, animatedSprite, hp, width, height);
         isDead = false;
         isActive = true;
@@ -54,7 +56,7 @@ public class PlayerShip extends Character {
         hitbox = new Polygon();
         hitbox.getPoints().addAll(points);
         hitbox.setFill(Color.TRANSPARENT);
-        specialAttacKCount=3;
+        this.specialAttacKCount = specialAttacKCount;
         this.getChildren().add(hitbox);
     }
 
@@ -87,19 +89,19 @@ public class PlayerShip extends Character {
 
     public void turnLeft() {
         Platform.runLater(() -> {
-            animatedSprite.setRotate(animatedSprite.getRotate() - 5);
-            Rotate rotate = new Rotate(-5, getWidth()/2, getHeight()/2);
+            animatedSprite.setRotate(animatedSprite.getRotate() - 10);
+            Rotate rotate = new Rotate(-10, getWidth()/2, getHeight()/2);
             hitbox.getTransforms().add(rotate);
+            logger.trace(String.format("Turned Left: %.2f", animatedSprite.getRotate()));
         });
-        logger.trace(String.format("Turned Left: %.2f", animatedSprite.getRotate()));
     }
     public void turnRight() {
         Platform.runLater(() -> {
-            animatedSprite.setRotate(animatedSprite.getRotate() + 5);
-            Rotate rotate = new Rotate(5, getWidth()/2, getHeight()/2);
+            animatedSprite.setRotate(animatedSprite.getRotate() + 10);
+            Rotate rotate = new Rotate(10, getWidth()/2, getHeight()/2);
             hitbox.getTransforms().add(rotate);
+            logger.trace(String.format("Turned Right: %.2f", animatedSprite.getRotate()));
         });
-        logger.trace(String.format("Turned Right: %.2f", animatedSprite.getRotate()));
     }
     public void die() {
         isDead = true;
@@ -117,6 +119,9 @@ public class PlayerShip extends Character {
         double bx = Math.sin(Math.toRadians(animatedSprite.getRotate())) * animatedSprite.getFitHeight()/2 + getX();
         double by = -Math.cos(Math.toRadians(animatedSprite.getRotate())) * animatedSprite.getFitHeight()/2 + getY();
 
+        Media shotSound = new Media(Launcher.class.getResource("audio/bulletShot.mp3").toString());
+        MediaPlayer shotPlayer = new MediaPlayer(shotSound);
+        shotPlayer.play();
         Bullet bullet = new Bullet(bx, by, 0, 0, new AnimatedSprite(new Image(Launcher.class.getResource("bullet_sprite_yellow.png").toString()), 4, 4, 1, 0, 0, 100, 69), 30, 25);
         bullet.setVx(bvx);
         bullet.setVy(bvy);
@@ -137,7 +142,10 @@ public class PlayerShip extends Character {
         double bx = Math.sin(Math.toRadians(animatedSprite.getRotate())) * (animatedSprite.getFitHeight()/2) + getX();
         double by = -Math.cos(Math.toRadians(animatedSprite.getRotate())) * (animatedSprite.getFitHeight()/2) + getY();
 
-        Bomb bomb = new Bomb(bx, by, 0, 0, new AnimatedSprite(new Image(Launcher.class.getResource("laserRed14.png").toString()), 1, 1, 1, 0, 0, 13, 57), 20, 40);
+        Media shotSound = new Media(Launcher.class.getResource("audio/Bomb.mp3").toString());
+        MediaPlayer shotPlayer = new MediaPlayer(shotSound);
+        shotPlayer.play();
+        Bomb bomb = new Bomb(bx, by, 0, 0, new AnimatedSprite(new Image(Launcher.class.getResource("bomb_sprite_sheet.png").toString()), 3, 3, 1, 0, 0, 128, 159), 40, 40);
         bomb.setBulletLife(25);
         bomb.setVx(bvx);
         bomb.setVy(bvy);

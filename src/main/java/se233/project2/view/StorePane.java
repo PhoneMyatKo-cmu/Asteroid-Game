@@ -13,13 +13,13 @@ import static se233.project2.controller.StorePaneController.*;
 public class StorePane extends StackPane {
     GridPane gridPane = new GridPane();
     ImageView bgView;
-    int hp, points, fireRate, bulletSpeed;
-    int hpPrice, fireRatePrice, bulletSpeedPrice;
-    int hpLvl, fireRateLvl, bulletSpeedLvl;
+    int hp, points, fireRate, bulletSpeed, bombCount;
+    int hpPrice, fireRatePrice, bulletSpeedPrice, bombPrice;
+    int hpLvl, fireRateLvl, bulletSpeedLvl, bombLvl;
 
-    Button upgradeHpBtn, upgradeFireRateBtn, upgradeBulletSpeedBtn, backBtn;
-    Label pointLbl, hpLbl, fireRateLbl, bulletSpeedLbl, hpPriceLbl, fireRatePriceLbl, bulletSpeedPriceLbl;
-    Label hpLvlLbl, fireRateLvlLbl, bulletSpeedLvlLbl;
+    Button upgradeHpBtn, upgradeFireRateBtn, upgradeBulletSpeedBtn, upgradeBombBtn, backBtn;
+    Label pointLbl, hpLbl, fireRateLbl, bulletSpeedLbl, hpPriceLbl, fireRatePriceLbl, bulletSpeedPriceLbl, bombLbl, bombPriceLbl;
+    Label hpLvlLbl, fireRateLvlLbl, bulletSpeedLvlLbl, bombLvlLbl;
 
     public StorePane() {
         this.setPrefSize(800, 600);
@@ -38,17 +38,20 @@ public class StorePane extends StackPane {
 
     private void loadData() {
         points = GameMenu.gameDataMap.get("Points");
-        hp = GameMenu.gameDataMap.get("HP");
-        fireRate = GameMenu.gameDataMap.get("FireRate");
-        bulletSpeed = GameMenu.gameDataMap.get("BulletSpeed");
+        hp = GameMenu.gameDataMap.getOrDefault("HP", 3);
+        fireRate = GameMenu.gameDataMap.getOrDefault("FireRate", 3);
+        bulletSpeed = GameMenu.gameDataMap.getOrDefault("BulletSpeed", 20);
+        bombCount = GameMenu.gameDataMap.getOrDefault("Bomb", 3);
 
         hpLvl = (hp - 3);
         fireRateLvl = fireRate - 3;
         bulletSpeedLvl = (bulletSpeed - 20) / 5;
+        bombLvl = bombCount - 3;
 
         hpPrice = (int) Math.pow(2, hpLvl);
         fireRatePrice = (int) Math.pow(2, fireRateLvl);
         bulletSpeedPrice = (int) Math.pow(2, bulletSpeedLvl);
+        bombPrice = (int) Math.pow(2, bombLvl);
     }
     
     private void createLabels() {
@@ -65,6 +68,10 @@ public class StorePane extends StackPane {
         bulletSpeedLbl = new Label("BulletSpeed: " + bulletSpeed);
         bulletSpeedLvlLbl = new Label("Lvl:" + bulletSpeedLvl);
         bulletSpeedPriceLbl = new Label("Price: " + bulletSpeedPrice);
+        
+        bombLbl = new Label("Bomb: " + bombCount);
+        bombLvlLbl = new Label("Lvl: " + bombLvl);
+        bombPriceLbl = new Label("Price: " + bombPrice);
     }
     
     public void updateLabels() {
@@ -81,6 +88,10 @@ public class StorePane extends StackPane {
         bulletSpeedLbl.setText("BulletSpeed: " + bulletSpeed);
         bulletSpeedLvlLbl.setText("Lvl:" + bulletSpeedLvl);
         bulletSpeedPriceLbl.setText("Price: " + bulletSpeedPrice);
+
+        bombLbl.setText("Bomb: " + bombCount);
+        bombLvlLbl.setText("Lvl: " + bombLvl);
+        bombPriceLbl.setText("Price: " + bombPrice);
     }
 
     private void createBtns() {
@@ -88,6 +99,7 @@ public class StorePane extends StackPane {
         upgradeHpBtn = new Button("Upgrade");
         upgradeFireRateBtn = new Button("Upgrade");
         upgradeBulletSpeedBtn = new Button("Upgrade");
+        upgradeBombBtn = new Button("Upgrade");
     }
 
     private void setUpGridPane() {
@@ -108,6 +120,11 @@ public class StorePane extends StackPane {
         gridPane.add(bulletSpeedPriceLbl, 5, 3);
         gridPane.add(upgradeBulletSpeedBtn, 6, 3);
 
+        gridPane.add(bombLbl, 0, 4);
+        gridPane.add(bombLvlLbl, 1, 4);
+        gridPane.add(bombPriceLbl, 5, 4);
+        gridPane.add(upgradeBombBtn, 6, 4);
+
         gridPane.setHgap(50);
         gridPane.setVgap(50);
         gridPane.setPrefSize(800, 600);
@@ -120,6 +137,7 @@ public class StorePane extends StackPane {
         upgradeHpBtn.getStyleClass().add("button");
         upgradeFireRateBtn.getStyleClass().add("button");
         upgradeBulletSpeedBtn.getStyleClass().add("button");
+        upgradeBombBtn.getStyleClass().add("button");
 
         hpLbl.getStyleClass().add("scoreLabel");
         hpPriceLbl.getStyleClass().add("scoreLabel");
@@ -133,6 +151,10 @@ public class StorePane extends StackPane {
         bulletSpeedPriceLbl.getStyleClass().add("scoreLabel");
         bulletSpeedLvlLbl.getStyleClass().add("scoreLabel");
 
+        bombLbl.getStyleClass().add("scoreLabel");
+        bombPriceLbl.getStyleClass().add("scoreLabel");
+        bombLvlLbl.getStyleClass().add("scoreLabel");
+
         pointLbl.getStyleClass().add("scoreLabel");
     }
 
@@ -141,6 +163,7 @@ public class StorePane extends StackPane {
         upgradeHpBtn.setOnAction(event -> setOnUpgradeHpBtn(this));
         upgradeFireRateBtn.setOnAction(event -> setOnUpgradeFireRateBtn(this));
         upgradeBulletSpeedBtn.setOnAction(event -> setOnUpgradeBulletSpeedBtn(this));
+        upgradeBombBtn.setOnAction(event -> setOnUpgradeBombBtn(this));
     }
 
 
@@ -223,6 +246,28 @@ public class StorePane extends StackPane {
     public void setBulletSpeedLvl(int bulletSpeedLvl) {
         this.bulletSpeedLvl = bulletSpeedLvl;
     }
-    
-    
+
+    public int getBombCount() {
+        return bombCount;
+    }
+
+    public void setBombCount(int bombCount) {
+        this.bombCount = bombCount;
+    }
+
+    public int getBombPrice() {
+        return bombPrice;
+    }
+
+    public void setBombPrice(int bombPrice) {
+        this.bombPrice = bombPrice;
+    }
+
+    public int getBombLvl() {
+        return bombLvl;
+    }
+
+    public void setBombLvl(int bombLvl) {
+        this.bombLvl = bombLvl;
+    }
 }

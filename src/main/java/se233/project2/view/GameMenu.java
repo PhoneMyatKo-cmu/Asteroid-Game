@@ -10,6 +10,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Popup;
 import se233.project2.Launcher;
 import se233.project2.controller.GameMenuController;
@@ -26,7 +28,12 @@ public class GameMenu extends StackPane {
     private Button helpBtn;
     private Button storeBtn;
     public static Map<String, Integer> gameDataMap = new HashMap<>();
+    public MediaPlayer themePlayer;
     public GameMenu() {
+        Media theme = new Media(Launcher.class.getResource("audio/GameMenuTheme.mp3").toString());
+        themePlayer = new MediaPlayer(theme);
+        themePlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        themePlayer.play();
         getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
         backgroundImg = new Image(Launcher.class.getResourceAsStream("menu_bg.png"));
         ImageView backgroundImgV = new ImageView(backgroundImg);
@@ -38,7 +45,6 @@ public class GameMenu extends StackPane {
         storeBtn = new Button("Store");
         titleLbl = new Label("Welcome To The Asteroids");
         pointLbl = new Label("Total Points: " + GameMenu.gameDataMap.get("Points"));
-        pointLbl.getStyleClass().add("scoreLabel");
         buttonBox.getChildren().addAll(titleLbl, pointLbl, startBtn,helpBtn, storeBtn);
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setSpacing(10);
@@ -53,7 +59,7 @@ public class GameMenu extends StackPane {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(gameDataMap);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -67,6 +73,7 @@ public class GameMenu extends StackPane {
             gameDataMap.put("HP", 3);
             gameDataMap.put("FireRate", 3);
             gameDataMap.put("BulletSpeed", 20);
+            gameDataMap.put("Bomb", 3);
         }
     }
 
@@ -74,10 +81,12 @@ public class GameMenu extends StackPane {
         startBtn.getStyleClass().add("button");
         helpBtn.getStyleClass().add("button");
         titleLbl.getStyleClass().add("title");
+        pointLbl.getStyleClass().add("scoreLabel");
     }
 
     public void initialize(){
         startBtn.setOnAction(e -> {
+            themePlayer.stop();
             GameMenuController.onStart();
         });
 

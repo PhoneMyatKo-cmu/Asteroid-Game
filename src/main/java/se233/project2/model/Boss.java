@@ -3,6 +3,8 @@ package se233.project2.model;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import se233.project2.Launcher;
 import se233.project2.view.GameStage;
 
@@ -52,6 +54,9 @@ public class Boss  extends Character{
         double bx = -Math.sin(Math.toRadians(animatedSprite.getRotate())) * animatedSprite.getFitHeight()/2 + getX();
         double by = Math.cos(Math.toRadians(animatedSprite.getRotate())) * animatedSprite.getFitHeight()/2 + getY();
 
+        Media shotSound = new Media(Launcher.class.getResource("audio/enemy_bulletSound.mp3").toString());
+        MediaPlayer shotPlayer = new MediaPlayer(shotSound);
+        shotPlayer.play();
         Bullet bullet = new Bullet(bx, by, 0, 0, new AnimatedSprite(new Image(Launcher.class.getResource("bullet_sprite_red.png").toString()), 4, 4, 1, 0, 234, 105, 117), 30, 25);
         bullet.setVx(bvx);
         bullet.setVy(bvy);

@@ -5,7 +5,10 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import se233.project2.Launcher;
 import se233.project2.model.*;
 import se233.project2.view.GameMenu;
 import se233.project2.view.GameStage;
@@ -27,6 +30,7 @@ public class DrawingLoop implements Runnable {
     }
 
     private void bossRoundTransistion() {
+        Platform.runLater(() -> gameStage.themePlayer.pause());
         Label warningLabel = new Label("Final Boss Incoming!!!");
         Platform.runLater(() -> {
             warningLabel.setStyle("-fx-font-size: 40px; -fx-text-fill: red; -fx-alignment: center");
@@ -36,9 +40,16 @@ public class DrawingLoop implements Runnable {
             gameStage.getChildren().add(warningLabel);
 
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
-            pause.setOnFinished(event -> gameStage.getChildren().remove(warningLabel));
+            Media bossEntranceSound = new Media(Launcher.class.getResource("audio/BossEntrance.mp3").toString());
+            MediaPlayer bossEntrancePlayer = new MediaPlayer(bossEntranceSound);
+            bossEntrancePlayer.setStopTime(Duration.seconds(2));
+            bossEntrancePlayer.play();
+            pause.setOnFinished(event -> {
+                gameStage.getChildren().remove(warningLabel);
+                gameStage.themePlayer.play();
+            });
             pause.play();
-            Timeline timeline=new Timeline(new KeyFrame(Duration.millis(1000), event -> {gameStage.getBossHealthBar().setVisible(true);}));
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> {gameStage.getBossHealthBar().setVisible(true);}));
             timeline.setCycleCount(1);
             timeline.play();
         });
@@ -152,11 +163,12 @@ public class DrawingLoop implements Runnable {
                     Thread.sleep(interval - elapsedTime % interval);
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
         Platform.runLater(() -> {
             GameMenu.gameDataMap.put("Points", GameMenu.gameDataMap.getOrDefault("Points", 0) + playerShip.getScore());
+            Platform.runLater(() -> gameStage.themePlayer.stop());
             if(gameStage.isWon())
                 GameStageController.changeToGameOver("Victory",gameStage);
             else

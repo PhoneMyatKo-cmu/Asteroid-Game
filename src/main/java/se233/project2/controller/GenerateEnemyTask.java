@@ -69,7 +69,7 @@ public class GenerateEnemyTask implements Runnable {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
 
             int numberOfAsteroids = rand.nextInt(1, 4);

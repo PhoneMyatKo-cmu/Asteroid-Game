@@ -47,6 +47,18 @@ public class StorePaneController {
         updateGameData(pane.getPoints(), "BulletSpeed", pane.getBulletSpeed());
     }
 
+    public static void setOnUpgradeBombBtn(StorePane pane) {
+        if (pane.getPoints() - pane.getBombPrice() < 0) {
+            return;
+        }
+        pane.setPoints(pane.getPoints() - pane.getBombPrice());
+        pane.setBombCount(pane.getBombCount() + 1);
+        pane.setBombLvl(pane.getBombLvl() + 1);
+        pane.setBombPrice((int) Math.pow(2, pane.getBombLvl()));
+        pane.updateLabels();
+        updateGameData(pane.getPoints(), "Bomb", pane.getBombCount());
+    }
+
     private static void updateGameData(int points, String field, int value) {
         GameMenu.gameDataMap.put("Points", points);
         GameMenu.gameDataMap.put(field, value);

@@ -164,7 +164,7 @@ public class GameLoop implements Runnable {
                     Thread.sleep(interval - elapsedTime % interval);
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }

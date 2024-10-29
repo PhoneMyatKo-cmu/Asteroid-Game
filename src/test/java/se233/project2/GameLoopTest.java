@@ -26,7 +26,7 @@ public class GameLoopTest {
 
     @BeforeEach
     public void setup() throws NoSuchMethodException {
-        playerShip = new PlayerShip(0, 0, new AnimatedSprite(new Image(getClass().getResourceAsStream("playership_sprite.png")), 3, 3, 1, 0, 0, 124, 240), 3, 62, 120);
+        playerShip = new PlayerShip(0, 0, new AnimatedSprite(new Image(getClass().getResourceAsStream("playership_sprite.png")), 3, 3, 1, 0, 0, 124, 240), 3, 62, 120, 3);
         gameStage = new GameStage();
         gameStage.getChildren().add(playerShip);
         gameStage.setPlayerShip(playerShip);

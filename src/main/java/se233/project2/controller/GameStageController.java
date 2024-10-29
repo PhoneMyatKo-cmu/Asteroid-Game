@@ -4,6 +4,8 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import se233.project2.Launcher;
@@ -13,21 +15,21 @@ import se233.project2.view.GameStage;
 public class GameStageController {
     private static void startCountdown(Label countdownLabel, Runnable runnable) {
         countdownLabel.setVisible(true);
-        final int[] countdown = {3}; // Starting count
 
         AnimationTimer timer = new AnimationTimer() {
             private long lastUpdate = 0;
+            int countdown = 3; // Starting count
 
             @Override
             public void handle(long now) {
                 if (now - lastUpdate >= 1_000_000_000) { // 1 second
                     lastUpdate = now;
-                    if (countdown[0] >= 0) {
-                        if (countdown[0] == 0) {
+                    if (countdown >= 0) {
+                        if (countdown == 0) {
                             countdownLabel.setText("The Game Starts");
                         }else{
-                            countdownLabel.setText(String.valueOf(countdown[0]));}
-                        countdown[0]--;
+                            countdownLabel.setText(String.valueOf(countdown));}
+                        countdown--;
                     } else {
                         this.stop();
                         countdownLabel.setVisible(false);
@@ -38,6 +40,9 @@ public class GameStageController {
                 }
             }
         };
+        Media countdown = new Media(Launcher.class.getResource("audio/countdown.mp3").toString());
+        MediaPlayer countdownPlayer = new MediaPlayer(countdown);
+        countdownPlayer.play();
         timer.start();
     }
 
